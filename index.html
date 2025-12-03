@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекер 99 Уточек</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+
+    <div class="tracker-container">
+        <h1>🔍 Квест 99 Уточек 🦆</h1>
+        <h2>Найдено: <span id="ducks-found">0</span> | Осталось: <span id="ducks-remaining">99</span></h2>
+
+        <div id="final-message" class="hidden">
+            <p>🎉 ПОЗДРАВЛЯЕМ! ТЫ НАШЕЛ ВСЕ 99 УТОЧЕК! 🎉</p>
+            <h2>🎁 Посмотри под елочкой! 🎄</h2>
+        </div>
+
+        <div class="gift-progress">
+            <p>Прогресс подарков (за каждые 20 уточек):</p>
+            <div class="gift-bar">
+                <div class="gift-marker" id="gift-20">20</div>
+                <div class="gift-marker" id="gift-40">40</div>
+                <div class="gift-marker" id="gift-60">60</div>
+                <div class="gift-marker" id="gift-80">80</div>
+            </div>
+            <p>Следующий подарок на <span id="next-gift-count">20</span>-й уточке!</p>
+        </div>
+
+        <div class="ducks-grid" id="ducks-grid-container">
+            </div>
+    </div>
+
+    <script src="script.js"></script> 
+
+</body>
+</html>
