@@ -1,52 +1,7 @@
-// Import the functions you need from the SDKs you need
-
-import { initializeApp } from "firebase/app";
-
-import { getAnalytics } from "firebase/analytics";
-
-// TODO: Add SDKs for Firebase products that you want to use
-
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-
-
-// Your web app's Firebase configuration
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyAtsoGcnOg9d5sf7NJMbha5HLKlgamF0Ds",
-
-  authDomain: "wolsfy.firebaseapp.com",
-
-  projectId: "wolsfy",
-
-  storageBucket: "wolsfy.firebasestorage.app",
-
-  messagingSenderId: "405020920570",
-
-  appId: "1:405020920570:web:a660b83f84c2408959d743",
-
-  measurementId: "G-BGFSVG9DPQ"
-
-};
-
-
-
-// Initialize Firebase
-
-const app = initializeApp(firebaseConfig);
-
-const analytics = getAnalytics(app);
-
-
-// --- ИНИЦИАЛИЗАЦИЯ FIREBASE и КОНСТАНТЫ ---
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+// --- КОНСТАНТЫ ПРОЕКТА ---
 const TOTAL_DUCKS = 99;
-const FALLBACK_INITIAL_FOUND = 41;
-const USER_ID = 'duckHunter_main'; // Уникальный ID вашего МЧ. Прогресс сохраняется по этому ключу!
+// Если в хранилище нет данных, стартуем с этого числа
+const FALLBACK_INITIAL_FOUND = 41; 
 
 const ducksGridContainer = document.getElementById('ducks-grid-container');
 const ducksFoundElement = document.getElementById('ducks-found');
@@ -63,21 +18,41 @@ const giftMarkers = {
 };
 
 
-// 1. ФУНКЦИЯ: СОХРАНЕНИЕ ПРОГРЕССА (ОТПРАВКА В ОБЛАКО)
+// 1. ФУНКЦИЯ: ЗАГРУЗКА ПРОГРЕССА ИЗ BROWSER LOCAL STORAGE
+function loadProgress() {
+    try {
+        const saved = localStorage.getItem('duckTrackerFoundIds');
+        // Если что-то сохранено, парсим JSON и возвращаем массив
+        return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+        console.error("Ошибка при загрузке прогресса:", e);
+        return null; // При ошибке возвращаем null
+    }
+}
+
+// 2. ФУНКЦИЯ: СОХРАНЕНИЕ ПРОГРЕССА В BROWSER LOCAL STORAGE
 function saveProgress(foundIds) {
-    // Отправляем массив найденных ID по пути "users/duckHunter_main/foundDucks"
-    db.ref('users/' + USER_ID).set({
-        foundDucks: foundIds
-    });
+    try {
+        // Сохраняем массив ID в виде JSON-строки
+        localStorage.setItem('duckTrackerFoundIds', JSON.stringify(foundIds));
+    } catch (e) {
+        console.error("Ошибка при сохранении прогресса:", e);
+    }
 }
 
 
-// 2. ФУНКЦИЯ: ГЕНЕРАЦИЯ ВСЕХ ЭЛЕМЕНТОВ УТОЧЕК
-function generateDucks(initialFoundIds) {
+// 3. ФУНКЦИЯ: ГЕНЕРАЦИЯ ВСЕХ ЭЛЕМЕНТОВ УТОЧЕК
+function generateDucks() {
+    // 1. Загружаем сохраненный прогресс
+    const savedIds = loadProgress();
+    
+    // Если нет сохраненного прогресса, создаем массив ID на основе FALLBACK_INITIAL_FOUND
+    const initialFoundIds = savedIds || Array.from({length: FALLBACK_INITIAL_FOUND}, (_, i) => i + 1);
     const initialSet = new Set(initialFoundIds); // для быстрого поиска
 
     let html = '';
     for (let i = 1; i <= TOTAL_DUCKS; i++) {
+        // Проверяем, есть ли ID текущей уточки в наборе найденных
         const statusClass = initialSet.has(i) ? 'found' : 'missing';
         html += `<div class="duck ${statusClass}" data-id="${i}"></div>`;
     }
@@ -85,14 +60,14 @@ function generateDucks(initialFoundIds) {
 }
 
 
-// 3. ФУНКЦИЯ: ОБНОВЛЕНИЕ СЧЕТЧИКА и ПОДАРКОВ (и сохранение)
+// 4. ФУНКЦИЯ: ОБНОВЛЕНИЕ СЧЕТЧИКА и ПОДАРКОВ (и сохранение)
 function updateCounters() {
     // Находим все уточки, у которых сейчас есть класс 'found'
     const foundDucksElements = document.querySelectorAll('.duck.found');
     const foundDucksCount = foundDucksElements.length;
     const remainingDucks = TOTAL_DUCKS - foundDucksCount;
     
-    // NEW: Собираем ID найденных уточек и СОХРАНЯЕМ В ОБЛАК
+    // NEW: Собираем ID найденных уточек и сохраняем
     const foundIds = Array.from(foundDucksElements).map(duck => parseInt(duck.dataset.id));
     saveProgress(foundIds);
     
@@ -126,47 +101,34 @@ function updateCounters() {
 }
 
 
-// 4. ФУНКЦИЯ: ОБРАБОТКИ КЛИКА
+// 5. ФУНКЦИЯ: ОБРАБОТКИ КЛИКА
 function handleDuckClick(event) {
     const clickedDuck = event.target;
     
     if (clickedDuck.classList.contains('duck')) {
+        // Переключаем классы: found <-> missing
         clickedDuck.classList.toggle('found');
         clickedDuck.classList.toggle('missing');
         
-        updateCounters(); // Сохранение в облако происходит внутри updateCounters
+        // Обновляем все счетчики (этот вызов также сохранит прогресс)
+        updateCounters();
     }
 }
 
 
-// 5. ИНИЦИАЛИЗАЦИЯ ПРОЕКТА (запускается после загрузки DOM)
+// 6. ИНИЦИАЛИЗАЦИЯ ПРОЕКТА (запускается, когда DOM загружен)
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Создаем уточки, используя сохраненный прогресс
+    generateDucks();
     
-    // Загрузка данных из облака
-    db.ref('users/' + USER_ID).once('value').then(snapshot => {
-        const data = snapshot.val();
-        let initialFoundIds = [];
-        
-        if (data && data.foundDucks) {
-            // Используем данные из облака
-            initialFoundIds = data.foundDucks;
-        } else {
-            // Если в облаке пусто, используем стартовое значение
-            initialFoundIds = Array.from({length: FALLBACK_INITIAL_FOUND}, (_, i) => i + 1);
-        }
-
-        // 1. Создаем уточки на основе полученных данных
-        generateDucks(initialFoundIds);
-        
-        // 2. Находим все созданные элементы уточек
-        const duckElements = document.querySelectorAll('.duck');
-        
-        // 3. Добавляем обработчик клика к каждой уточке
-        duckElements.forEach(duck => {
-            duck.addEventListener('click', handleDuckClick);
-        });
-
-        // 4. Обновляем счетчик
-        updateCounters();
+    // 2. Находим все созданные элементы уточек
+    const duckElements = document.querySelectorAll('.duck');
+    
+    // 3. Добавляем обработчик клика к каждой уточке
+    duckElements.forEach(duck => {
+        duck.addEventListener('click', handleDuckClick);
     });
+
+    // 4. Инициализируем счетчик при загрузке страницы
+    updateCounters();
 });
