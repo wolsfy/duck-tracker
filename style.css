@@ -4,6 +4,7 @@ body {
     color: #333;
     text-align: center;
     padding: 20px;
+    overflow-x: hidden;
 }
 
 .tracker-container {
@@ -30,21 +31,21 @@ h2 {
 /* --- Стили для финального сообщения "Под елочкой" --- */
 
 .hidden {
-    display: none; /* Скрывает элемент по умолчанию */
+    display: none;
 }
 
 #final-message {
     margin: 30px auto;
     padding: 20px;
-    background-color: #ff6b6b; /* Рождественский красный */
+    background-color: #ff6b6b;
     border-radius: 10px;
     color: white;
     font-size: 1.2em;
-    animation: pulse 1s infinite alternate; /* Добавляем мигающую анимацию */
+    animation: pulse 1s infinite alternate;
 }
 
 #final-message h2 {
-    color: white; /* Делаем текст в сообщении белым */
+    color: white;
     font-size: 2em;
 }
 
@@ -95,8 +96,56 @@ h2 {
     color: #888;
 }
 
+/* --- НОВАЯ АНИМАЦИЯ: Покачивание при наведении --- */
 .duck:hover {
-    transform: scale(1.05);
+    animation: wobble 0.5s ease-in-out;
+}
+
+@keyframes wobble {
+    0%, 100% { transform: rotate(0deg) scale(1.05); }
+    25% { transform: rotate(-5deg) scale(1.05); }
+    50% { transform: rotate(5deg) scale(1.05); }
+    75% { transform: rotate(-3deg) scale(1.05); }
+}
+
+/* --- НОВАЯ АНИМАЦИЯ: Всплытие при нахождении уточки --- */
+.duck.pop-animation {
+    animation: popUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popUp {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.3) rotate(10deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* --- НОВАЯ АНИМАЦИЯ: Конфетти --- */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiFall 1s ease-out forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
 }
 
 /* --- Прогресс-бар подарков --- */
