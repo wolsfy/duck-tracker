@@ -72,15 +72,19 @@ h2 {
     background: transparent;
 }
 
-/* Уточка как большой эмодзи-фон */
+/* Уточка как картинка-фон */
 .duck::before {
-    content: '🦆';
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 45px;
-    line-height: 1;
+    width: 50px;
+    height: 50px;
+    background-image: url('duck.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     z-index: 1;
     transition: all 0.3s;
 }
@@ -94,22 +98,19 @@ h2 {
     transform: translate(-50%, -50%);
     z-index: 2;
     font-weight: 900;
-    font-size: 13px;
+    font-size: 14px;
+    color: #333;
     text-shadow: 
         -1px -1px 0 #fff,
         1px -1px 0 #fff,
         -1px 1px 0 #fff,
         1px 1px 0 #fff,
-        0 0 3px rgba(255, 255, 255, 0.8);
+        0 0 3px rgba(255, 255, 255, 0.9);
 }
 
-/* Найденная уточка - ЯРКО-ЖЕЛТАЯ */
+/* Найденная уточка - яркая */
 .duck.found::before {
-    filter: 
-        brightness(1.4) 
-        saturate(2) 
-        hue-rotate(-10deg)
-        drop-shadow(0 3px 6px rgba(255, 193, 7, 0.4));
+    filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .duck.found::after {
@@ -124,16 +125,16 @@ h2 {
 
 /* Ненайденная уточка - серая и прозрачная */
 .duck.missing::before {
-    filter: grayscale(100%) brightness(0.7) opacity(0.35);
+    filter: grayscale(100%) brightness(0.7) opacity(0.4);
 }
 
 .duck.missing::after {
-    color: #aaa;
+    color: #999;
     text-shadow: 
-        -1px -1px 0 rgba(255,255,255,0.5),
-        1px -1px 0 rgba(255,255,255,0.5),
-        -1px 1px 0 rgba(255,255,255,0.5),
-        1px 1px 0 rgba(255,255,255,0.5);
+        -1px -1px 0 rgba(255,255,255,0.6),
+        1px -1px 0 rgba(255,255,255,0.6),
+        -1px 1px 0 rgba(255,255,255,0.6),
+        1px 1px 0 rgba(255,255,255,0.6);
 }
 
 /* --- НОВАЯ АНИМАЦИЯ: Покачивание при наведении --- */
