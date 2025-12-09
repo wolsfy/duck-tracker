@@ -72,19 +72,15 @@ h2 {
     background: transparent;
 }
 
-/* Уточка как картинка-фон */
+/* Уточка как большой эмодзи */
 .duck::before {
-    content: '';
+    content: '🦆';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    background-image: url('https://raw.githubusercontent.com/wolsfy/duck-tracker/main/duck.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    font-size: 50px;
+    line-height: 1;
     z-index: 1;
     transition: all 0.3s;
 }
@@ -98,38 +94,42 @@ h2 {
     transform: translate(-50%, -50%);
     z-index: 2;
     font-weight: 900;
-    font-size: 14px;
+    font-size: 15px;
     color: #333;
     text-shadow: 
-        -1px -1px 0 #fff,
-        1px -1px 0 #fff,
-        -1px 1px 0 #fff,
-        1px 1px 0 #fff,
-        0 0 3px rgba(255, 255, 255, 0.9);
+        -1.5px -1.5px 0 #fff,
+        1.5px -1.5px 0 #fff,
+        -1.5px 1.5px 0 #fff,
+        1.5px 1.5px 0 #fff,
+        0 0 4px rgba(255, 255, 255, 1);
 }
 
-/* Найденная уточка - яркая */
+/* Найденная уточка - ЯРКО-ЖЕЛТАЯ */
 .duck.found::before {
-    filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: 
+        brightness(1.5) 
+        saturate(2.5) 
+        hue-rotate(-15deg)
+        drop-shadow(0 3px 8px rgba(255, 215, 0, 0.5));
 }
 
 .duck.found::after {
-    color: #ff6b00;
+    color: #d35400;
     text-shadow: 
-        -1px -1px 0 #fff,
-        1px -1px 0 #fff,
-        -1px 1px 0 #fff,
-        1px 1px 0 #fff,
-        0 0 4px rgba(255, 255, 255, 1);
+        -1.5px -1.5px 0 #fff,
+        1.5px -1.5px 0 #fff,
+        -1.5px 1.5px 0 #fff,
+        1.5px 1.5px 0 #fff,
+        0 0 5px rgba(255, 255, 255, 1);
 }
 
 /* Ненайденная уточка - серая и прозрачная */
 .duck.missing::before {
-    filter: grayscale(100%) brightness(0.7) opacity(0.4);
+    filter: grayscale(100%) brightness(0.6) opacity(0.35);
 }
 
 .duck.missing::after {
-    color: #999;
+    color: #aaa;
     text-shadow: 
         -1px -1px 0 rgba(255,255,255,0.6),
         1px -1px 0 rgba(255,255,255,0.6),
@@ -171,11 +171,11 @@ h2 {
 /* --- НОВАЯ АНИМАЦИЯ: Конфетти --- */
 .confetti {
     position: fixed;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     pointer-events: none;
     z-index: 9999;
-    animation: confettiFall 1s ease-out forwards;
+    animation: confettiFall 1.2s ease-out forwards;
     border-radius: 2px;
 }
 
