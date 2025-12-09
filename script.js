@@ -101,14 +101,68 @@ function updateCounters() {
 }
 
 
+// НОВАЯ ФУНКЦИЯ: СОЗДАНИЕ КОНФЕТТИ
+function createConfetti(x, y) {
+    const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2', '#ef476f', '#ffc6ff'];
+    const confettiCount = 15; // Количество частичек
+    
+    for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        
+        // Случайный цвет
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Начальная позиция (где кликнули)
+        confetti.style.left = x + 'px';
+        confetti.style.top = y + 'px';
+        
+        // Случайное направление разлета
+        const angle = (Math.random() * 360);
+        const distance = Math.random() * 100 + 50;
+        const duration = Math.random() * 0.5 + 0.5;
+        
+        confetti.style.setProperty('--angle', angle + 'deg');
+        confetti.style.animationDuration = duration + 's';
+        
+        document.body.appendChild(confetti);
+        
+        // Удаляем частичку после анимации
+        setTimeout(() => {
+            confetti.remove();
+        }, duration * 1000);
+    }
+}
+
+
 // 5. ФУНКЦИЯ: ОБРАБОТКИ КЛИКА
 function handleDuckClick(event) {
     const clickedDuck = event.target;
     
     if (clickedDuck.classList.contains('duck')) {
+        // Получаем координаты клика
+        const rect = clickedDuck.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        
         // Переключаем классы: found <-> missing
+        const wasFound = clickedDuck.classList.contains('found');
         clickedDuck.classList.toggle('found');
         clickedDuck.classList.toggle('missing');
+        
+        // Если уточка стала найденной, запускаем анимации
+        if (!wasFound) {
+            // Анимация всплытия
+            clickedDuck.classList.add('pop-animation');
+            
+            // Конфетти
+            createConfetti(x, y);
+            
+            // Удаляем класс анимации после завершения
+            setTimeout(() => {
+                clickedDuck.classList.remove('pop-animation');
+            }, 600);
+        }
         
         // Обновляем все счетчики (этот вызов также сохранит прогресс)
         updateCounters();
