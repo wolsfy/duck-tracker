@@ -103,9 +103,13 @@ h2 {
         0 0 3px rgba(255, 255, 255, 0.8);
 }
 
-/* Найденная уточка - яркая */
+/* Найденная уточка - ЯРКО-ЖЕЛТАЯ */
 .duck.found::before {
-    filter: brightness(1.3) saturate(1.5) drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: 
+        brightness(1.4) 
+        saturate(2) 
+        hue-rotate(-10deg)
+        drop-shadow(0 3px 6px rgba(255, 193, 7, 0.4));
 }
 
 .duck.found::after {
