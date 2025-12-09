@@ -72,7 +72,7 @@ h2 {
     background: transparent;
 }
 
-/* Уточка как PNG изображение с fallback */
+/* Уточка как JPG изображение */
 .duck::before {
     content: '';
     position: absolute;
@@ -81,10 +81,7 @@ h2 {
     transform: translate(-50%, -50%);
     width: 50px;
     height: 50px;
-    /* Относительный путь для GitHub Pages */
-    background-image: url('./duck.png');
-    /* Fallback на абсолютный URL */
-    background-image: url('./duck.png'), url('https://raw.githubusercontent.com/wolsfy/duck-tracker/main/duck.png');
+    background-image: url('duck.jpg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
